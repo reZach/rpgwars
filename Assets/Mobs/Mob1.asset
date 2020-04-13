@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f6fc1f28238a4adb8d1747178271dc5, type: 3}
+  m_Name: Mob1
+  m_EditorClassIdentifier: 
+  root: {fileID: 114556672822849886}
+  nodes:
+  - {fileID: 114556672822849886}
+  - {fileID: 114711734970763304}
+  blackboard:
+    list: []
+  position: {x: 0, y: -1}
+  zoom: 1
+--- !u!114 &114556672822849886
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e14954a75ff04471aa9befca86cdb5d, type: 3}
+  m_Name: Entry
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  useConditionsList: 0
+  prefabConditionsList: {fileID: 0}
+  useActionsList: 0
+  prefabActionsList: {fileID: 0}
+  input: {fileID: 0}
+  outputs:
+  - {fileID: 114711734970763304}
+  mode: 0
+  editorName: 
+  position: {x: -50, y: -100}
+--- !u!114 &114711734970763304
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaee7f1d0b2dd4de3954af2150d3cf1b, type: 3}
+  m_Name: Task
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  useConditionsList: 0
+  prefabConditionsList: {fileID: 4416277052465791519, guid: 1ecc4645f09800c4da9d01944034bc35,
+    type: 3}
+  useActionsList: 1
+  prefabActionsList: {fileID: 902056297119462733, guid: 38276af7e06b7634db577d94c5617b8f,
+    type: 3}
+  input: {fileID: 114556672822849886}
+  outputs: []
+  mode: 0
+  editorName: 
+  position: {x: -100, y: -20}
