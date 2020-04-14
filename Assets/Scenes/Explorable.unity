@@ -3770,8 +3770,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1216988608}
-  - component: {fileID: 1216988610}
-  - component: {fileID: 1216988609}
   m_Layer: 5
   m_Name: TargetedObject
   m_TagString: Untagged
@@ -3797,44 +3795,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -31.3}
+  m_AnchoredPosition: {x: 0, y: -31.300049}
   m_SizeDelta: {x: 400, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1216988609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1216988607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
---- !u!222 &1216988610
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1216988607}
-  m_CullTransparentMesh: 0
 --- !u!1 &1246841083
 GameObject:
   m_ObjectHideFlags: 0
@@ -5165,6 +5128,10 @@ GameObject:
   - component: {fileID: 1589213573}
   - component: {fileID: 1589213578}
   - component: {fileID: 1589213579}
+  - component: {fileID: 1589213582}
+  - component: {fileID: 1589213581}
+  - component: {fileID: 1589213580}
+  - component: {fileID: 1589213583}
   m_Layer: 0
   m_Name: Player
   m_TagString: '|Player|Human|'
@@ -5378,6 +5345,69 @@ MonoBehaviour:
   HoldingItem: {fileID: 0}
   PlayerHealth: {fileID: 882312388}
   PlayerEnergy: {fileID: 1587863998}
+--- !u!114 &1589213580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589213572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb20222febfb0fc4a9b82884bd488214, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1589213581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589213572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee271c8102b70d4468e15cca22dac9c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsPlayerControlled: 0
+--- !u!114 &1589213582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589213572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a479c6f58d38eea44a93b9515ff7f1c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitialPosition: {x: 0, y: 0, z: 0}
+  Name: 
+  Title: 
+  Health: 0
+  MaxHealth: 0
+  Energy: 0
+  MaxEnergy: 0
+--- !u!114 &1589213583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589213572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a99d8022f4bf9547b8f40dc707da5aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Weapon1: {fileID: 0}
+  Weapon2: {fileID: 0}
+  ArmorHead: {fileID: 0}
+  ArmorChest: {fileID: 0}
+  ArmorHands: {fileID: 0}
+  ArmorLegs: {fileID: 0}
+  ArmorFeet: {fileID: 0}
 --- !u!1 &1605197668
 GameObject:
   m_ObjectHideFlags: 0
