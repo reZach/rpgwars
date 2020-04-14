@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,16 +10,18 @@ public abstract class BaseActor : MonoBehaviour
     protected NavMeshAgent _navMeshAgent;
     protected Vector3 _startPosition;
     protected BaseActor _target;
-    private SphereCollider _adjacentCollider;
-    private SphereCollider _nearbyCollider;
-    private SphereCollider _areaCollider;
+    protected SphereCollider _adjacentCollider;
+    protected SphereCollider _nearbyCollider;
+    protected SphereCollider _areaCollider;
     protected TargetingManager _targetingManager;
 
     private ushort _health = 1;    
     private ushort _maxHealth = 1;    
     private byte _energy = 1;    
     private byte _maxEnergy = 1;
+    protected float _radiusFix = 0.2f; // Extra width to pass into colliders
 
+    public Guid Guid;
     public ushort StartingHealth = 1;
     public byte StartingEnergy = 1;
     public BaseHoldable HoldingItem;
@@ -35,6 +38,7 @@ public abstract class BaseActor : MonoBehaviour
 
         MaxHealth = Health = StartingHealth;
         MaxEnergy = Energy = StartingEnergy;
+        Guid = new Guid();
 
         CreateColliders();
     }
@@ -106,6 +110,26 @@ public abstract class BaseActor : MonoBehaviour
     }
     #endregion
 
+    #region Holdables
+
+    /// <summary>
+    /// Casts the holdable item to an object
+    /// </summary>
+    /// <returns></returns>
+    public object Cast()
+    {
+        switch (HoldingItem.Type)
+        {
+            case BaseHoldable.HoldableType.Sword:
+                return (Sword)HoldingItem;
+            case BaseHoldable.HoldableType.Axe:
+                return (Axe)HoldingItem;
+            default:
+                return null;
+        }
+    }
+    #endregion
+
     #region Lifecycle
 
     /// <summary>
@@ -124,7 +148,7 @@ public abstract class BaseActor : MonoBehaviour
         DeleteColliders();
 
         this.gameObject.SetActive(false);
-        _targetingManager.Cancel(this.gameObject.GetInstanceID());
+        _targetingManager.Cancel(Guid);
     }
     #endregion
 

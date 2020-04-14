@@ -8,6 +8,7 @@ public class BaseWeapon : BaseHoldable
     protected float AttackSpeed;
     protected float AttackSpeedTimer;
     protected ushort AttackDamage;
+    protected float AttackRange;
 
     protected void BaseWeaponInitialize()
     {
@@ -18,7 +19,9 @@ public class BaseWeapon : BaseHoldable
     {
         if (CanAttack)
             AttackSpeedTimer += Time.deltaTime;
-        
+        else
+            AttackSpeedTimer = 0f;
+
         if (AttackSpeedTimer > AttackSpeed)
         {            
             AttackSpeedTimer = 0f;
@@ -36,5 +39,5 @@ public class BaseWeapon : BaseHoldable
     void Update()
     {
         
-    }
+    }    
 }

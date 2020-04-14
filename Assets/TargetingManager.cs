@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class TargetingManager : MonoBehaviour
 {
     private bool TargetingEnemy;    
-    private BaseActor TargetBaseActor;    
+    private BaseActor TargetBaseActor;
 
     public GameObject TargetedObject;
     public GameObject TargetedObjectHealth;
@@ -28,10 +28,10 @@ public class TargetingManager : MonoBehaviour
             TargetedObjectHealth.GetComponent<Slider>().value = TargetBaseActor.GetComponent<MobActor>().Health;
     }
 
-    public void Cancel(int instanceId)
-    {
+    public void Cancel(Guid guid)
+    {        
         // Cancel targeting if instance id matches TargetObject
-        if (TargetBaseActor != null && TargetBaseActor.GetInstanceID() == instanceId)
+        if (TargetBaseActor != null && TargetBaseActor.Guid == guid)
         {
             Cancel();
         }

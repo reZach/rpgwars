@@ -11,11 +11,11 @@ public class MobActor : BaseActor
     private bool AggroCooldown = false;
     private float AggroCooldownRadius = 3f;
     private float StoppingDistance = 1.2f;
-    private float WanderRadius = 11f;    
+    private float WanderRadius = 11f;
     private float MoveTimer = 0f;
     private float MoveTimerThreshold = 5f;
     private byte ResetWanderCounter = 0;
-    private byte ResetWanderThreshold = 5;    
+    private byte ResetWanderThreshold = 5;
 
     public Material DocileMaterial;
     public Material EngagedMaterial;
@@ -29,6 +29,9 @@ public class MobActor : BaseActor
     // Update is called once per frame
     void Update()
     {
+        if (!isActiveAndEnabled)
+            return;
+
         // If aggro is not on cooldown, attempt to chase the player
         if (!AggroCooldown)
             AggroHumans();
@@ -41,11 +44,12 @@ public class MobActor : BaseActor
             Vector3 newPosition = Vector3.zero;
 
             // If we are still within max aggro range, continue to follow target
-            if (Vector3.Distance(this.transform.position, _startPosition) <= MaxAggroRadius && 
+            if (Vector3.Distance(this.transform.position, _startPosition) <= MaxAggroRadius &&
                 !AggroCooldown)
             {
+                Debug.Log(Vector3.Distance(this.transform.position, _target.transform.position) > _adjacentCollider.radius + _radiusFix);
                 // Continue to follow player until stopping distance threshold has been reached                
-                if (Vector3.Distance(this.transform.position, _target.transform.position) > StoppingDistance)
+                if (Vector3.Distance(this.transform.position, _target.transform.position) > _adjacentCollider.radius + _radiusFix)
                 {
                     newPosition = _target.transform.position;
                     this.GetComponent<MeshRenderer>().material = EngagedMaterial;
@@ -53,7 +57,8 @@ public class MobActor : BaseActor
                 else
                 {
                     // Stop mob from moving once it is engaged (within range) of target
-                    _navMeshAgent.SetDestination(this.transform.position); AggroCooldown = false;
+                    _navMeshAgent.SetDestination(this.transform.position); 
+                    AggroCooldown = false;
                     return;
                 }
             }
@@ -63,7 +68,7 @@ public class MobActor : BaseActor
                 _target = null;
                 AggroCooldown = true;
                 this.GetComponent<MeshRenderer>().material = DocileMaterial;
-            }                
+            }
 
             if (newPosition != Vector3.zero)
                 _navMeshAgent.SetDestination(newPosition);
@@ -77,7 +82,7 @@ public class MobActor : BaseActor
             {
                 newPosition = RandomNavSphere(_startPosition, WanderRadius, -1);
                 MoveTimer = 0;
-            }                
+            }
             else
             {
                 newPosition = _startPosition;
@@ -85,7 +90,7 @@ public class MobActor : BaseActor
                 MoveTimer = -5f; // Wait a little bit longer after returning to StartPosition to move again
             }
 
-            _navMeshAgent.SetDestination(newPosition);            
+            _navMeshAgent.SetDestination(newPosition);
         }
 
         // Reset aggro
@@ -99,8 +104,8 @@ public class MobActor : BaseActor
         {
             Die();
             return;
-        }            
-        
+        }
+
         Health -= damage;
     }
 
@@ -111,9 +116,9 @@ public class MobActor : BaseActor
     {
         Collider[] hitColliders = Physics.OverlapSphere(this.transform.position, AggroRadius);
         for (int i = 0; i < hitColliders.Length; i++)
-        {            
+        {
             if (hitColliders[i].gameObject.tag.Contains("|Human|"))
-            {                
+            {
                 _target = hitColliders[i].gameObject.GetComponent<BaseActor>();
             }
         }
@@ -135,5 +140,5 @@ public class MobActor : BaseActor
         NavMesh.SamplePosition(randomDirection, out navHit, distance, layerMask);
 
         return navHit.position;
-    }    
+    }
 }

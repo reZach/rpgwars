@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Sword : BaseWeapon
+public class Axe : BaseWeapon
 {
     // Start is called before the first frame update
     void Start()
@@ -10,8 +10,7 @@ public class Sword : BaseWeapon
         base.BaseWeaponInitialize();
 
         AttackSpeed = 2f;
-        AttackDamage = 35;
-        AttackRange = 10f;
+        AttackDamage = 1;
     }
 
     // Update is called once per frame

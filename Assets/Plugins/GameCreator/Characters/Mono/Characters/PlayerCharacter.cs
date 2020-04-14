@@ -95,11 +95,53 @@
             this.inputType = inputType;
         }
 
+        /// <summary>
+        /// Set target to move (navmesh-style) towards Vector3. (Does not set locomotion style to move via navmesh - do so via UpdateLocomotion)!
+        /// </summary>
+        /// <param name="target"></param>
         public void SetInputPointTarget(Vector3 target)
         {            
             this.characterLocomotion.SetTarget(target, null, 0f, null);
         }
 
+        /// <summary>
+        /// Return a point on the terrain based on a mouse click.
+        /// </summary>
+        /// <param name="mousePosition"></param>
+        /// <returns></returns>
+        public Vector3 GetTerrainPositionFromMouseClick(Vector3 mousePosition)
+        {
+            Vector3 ret = Vector3.zero;
+
+            // Don't set target if we are pointed over a UI element
+            if (EventSystem.current.IsPointerOverGameObject())
+                return ret;
+
+            Camera maincam = this.GetMainCamera();
+            if (maincam == null) return ret;
+
+            Ray cameraRay = maincam.ScreenPointToRay(mousePosition);
+            this.characterLocomotion.SetTarget(cameraRay, this.mouseLayerMask, null, 0f, null);
+
+            RaycastHit[] hitBuffer = new RaycastHit[1];
+            QueryTriggerInteraction queryTrigger = QueryTriggerInteraction.Ignore;
+            int hitCount = Physics.RaycastNonAlloc(
+                cameraRay, hitBuffer, Mathf.Infinity,
+                this.mouseLayerMask, queryTrigger
+            );
+
+            if (hitCount > 0)
+            {
+                return hitBuffer[0].point;
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Set target to terrain location based on mouse click.
+        /// </summary>
+        /// <param name="mousePosition"></param>
         public void SetTargetFromMouseClick(Vector3 mousePosition)
         {
             // Don't set target if we are pointed over a UI element

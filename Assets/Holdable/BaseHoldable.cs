@@ -7,10 +7,11 @@ public class BaseHoldable : MonoBehaviour
     protected BaseActor BaseActor;
 
     public bool CanAttack;
-    public HoldableType Type = HoldableType.Weapon;
+    public HoldableType Type = HoldableType.Sword;
     public enum HoldableType
     {
-        Weapon = 0
+        Sword = 0,
+        Axe
     };
 
     protected void BaseHoldableInitialize()
@@ -28,5 +29,18 @@ public class BaseHoldable : MonoBehaviour
     void Update()
     {
         
-    }    
+    }
+
+    public BaseHoldable Cast()
+    {
+        switch (Type)
+        {
+            case HoldableType.Sword:
+                return (Sword)this;
+            case HoldableType.Axe:
+                return (Axe)this;
+            default:
+                return null;
+        }
+    }
 }

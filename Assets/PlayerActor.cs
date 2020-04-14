@@ -13,6 +13,7 @@ public class PlayerActor : BaseActor
 
     private bool Engaged;
     private ushort XP = 0;
+    private float _weaponRange;
     
     public PlayerHealth PlayerHealth;
     public PlayerEnergy PlayerEnergy;
@@ -26,6 +27,11 @@ public class PlayerActor : BaseActor
 
         PlayerHealth.Set(Health);
         PlayerEnergy.Set(Energy);
+
+        if (HoldingItem != null)
+        {
+            //BaseWeapon myWeapon = HoldingItem.Cast()
+        }
     }
 
     // Update is called once per frame
@@ -42,15 +48,26 @@ public class PlayerActor : BaseActor
         else if (Input.GetMouseButton(0))
         {
             Vector3 mousePosition = Input.mousePosition;
-            _target = null;
-            Engaged = false;
-            PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.PointAndClick);
-            PlayerCharacter.SetTargetFromMouseClick(mousePosition);
+            Vector3 terrainPosition = PlayerCharacter.GetTerrainPositionFromMouseClick(mousePosition);
+
+            // Don't move if we can't navigate there through the NavMeshAgent
+            if (terrainPosition != Vector3.zero)
+            {
+                NavMeshPath newPath = new NavMeshPath();
+                _navMeshAgent.CalculatePath(terrainPosition, newPath);
+                if (newPath.status == NavMeshPathStatus.PathComplete)
+                {
+                    _target = null;
+                    Engaged = false;
+                    PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.PointAndClick);
+                    PlayerCharacter.SetInputPointTarget(terrainPosition);
+                }
+            }                        
         }
         else if (_target != null)
         {
             // Continue to walk closer to target if not in range
-            if (Vector3.Distance(this.transform.position, _target.transform.position) > 1.3f)
+            if (Vector3.Distance(this.transform.position, _target.transform.position) > _adjacentCollider.radius + _radiusFix)
             {
                 PlayerCharacter.SetInputPointTarget(_target.transform.position);
             }
@@ -59,7 +76,15 @@ public class PlayerActor : BaseActor
                 // Stop walking closer to target
                 PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.Directional);
                 if (HoldingItem != null && Engaged)
+                {
                     HoldingItem.CanAttack = true;
+
+                    //// Look towards targeted enemy
+                    //Vector3 enemyDirection = (_target.transform.position - this.gameObject.transform.position).normalized;
+                    //Quaternion lookRotation = Quaternion.LookRotation(enemyDirection);
+
+                    //this.gameObject.transform.rotation = lookRotation;//Quaternion.Slerp(this.gameObject.transform.rotation, lookRotation, Time.deltaTime * 10f);
+                }                    
             }
         }
 
@@ -92,7 +117,7 @@ public class PlayerActor : BaseActor
         }
 
         // Stop attacking if we dis-engaged
-        if (!Engaged && HoldingItem != null)
+        if (HoldingItem != null && !Engaged)
             HoldingItem.CanAttack = false;
     }
 }
