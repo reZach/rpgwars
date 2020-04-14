@@ -5,30 +5,21 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class PlayerScript : MonoBehaviour
+public class PlayerActor : BaseActor
 {
-    private NavMeshAgent Agent;
     private PlayerCharacter PlayerCharacter;
     private CharacterController CharacterController;
-    private GameObject TargetedObject;
     private float TargetableRadius = 50f;
 
-    private ushort Health = 100;
-    private byte Energy = 20;
-
-    private bool Attacking = false;
-    private float AttackSpeed = 3f;
-    private float AttackSpeedTimer = 0f;
-    private ushort AttackDamage = 30;
-
-    public TargetingManager TargetingManager;
+    private ushort XP = 0;
+    
     public PlayerHealth PlayerHealth;
     public PlayerEnergy PlayerEnergy;
 
     // Start is called before the first frame update
     void Start()
     {
-        Agent = GetComponent<NavMeshAgent>();
+        base.Initialize();
         PlayerCharacter = GetComponent<PlayerCharacter>();
         CharacterController = GetComponent<CharacterController>();
 
@@ -39,55 +30,51 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Attacking)
-            AttackSpeedTimer += Time.deltaTime;
-
-        if (AttackSpeedTimer > AttackSpeed)
-        {
-            AttackSpeedTimer = 0f;
-            TargetedObject.GetComponent<Mob1>().DealDamage(AttackDamage);
-        }
-
         if (Input.GetKeyDown(KeyCode.W) ||
             Input.GetKeyDown(KeyCode.A) ||
             Input.GetKeyDown(KeyCode.S) ||
             Input.GetKeyDown(KeyCode.D))
         {
             PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.Directional);
+            if (HoldingItem != null)
+                HoldingItem.CanAttack = false;
         }
         else if (Input.GetMouseButton(0))
         {
             Vector3 mousePosition = Input.mousePosition;
-            TargetedObject = null;
+            _target = null;
+            if (HoldingItem != null)
+                HoldingItem.CanAttack = false;
             PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.PointAndClick);
             PlayerCharacter.SetTargetFromMouseClick(mousePosition);
         }
-        else if (TargetedObject != null)
+        else if (_target != null)
         {
             // Continue to walk closer to target if not in range
-            if (Vector3.Distance(this.transform.position, TargetedObject.transform.position) > 1.3f)
+            if (Vector3.Distance(this.transform.position, _target.transform.position) > 1.3f)
             {
-                PlayerCharacter.SetInputPointTarget(TargetedObject.transform.position);
+                PlayerCharacter.SetInputPointTarget(_target.transform.position);
             }
             else
             {
                 // Stop walking closer to target
                 PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.Directional);
-                Attacking = true;
+                if (HoldingItem != null)
+                    HoldingItem.CanAttack = true;
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            TargetingManager.Cancel();
+            _targetingManager.Cancel();
         } 
         else if (Input.GetKeyDown(KeyCode.Space))
         {
-            GameObject target = TargetingManager.MoveTowards();            
+            BaseActor target = _targetingManager.MoveTowards();            
             if (target != null)
             {
                 PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.PointAndClick);
-                TargetedObject = TargetingManager.MoveTowards();
+                _target = _targetingManager.MoveTowards();
             }
         }
         else if (Input.GetKeyDown(KeyCode.C))
@@ -97,7 +84,7 @@ public class PlayerScript : MonoBehaviour
             {
                 if (hitColliders[i].gameObject.tag.Contains("|Enemy|"))
                 {
-                    TargetingManager.Target(hitColliders[i].gameObject, true);
+                    _targetingManager.Target(hitColliders[i].gameObject.GetComponent<BaseActor>(), true);
                 }
             }
         }

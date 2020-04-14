@@ -4,11 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Mob1 : MonoBehaviour
+public class MobActor : BaseActor
 {
-    private NavMeshAgent Agent;
-    private Vector3 StartPosition;
-    private GameObject AggroTarget;
     private float AggroRadius = 10f;
     private float MaxAggroRadius = 15f; // From StartPosition
     private bool AggroCooldown = false;
@@ -18,18 +15,15 @@ public class Mob1 : MonoBehaviour
     private float MoveTimer = 0f;
     private float MoveTimerThreshold = 5f;
     private byte ResetWanderCounter = 0;
-    private byte ResetWanderThreshold = 5;
+    private byte ResetWanderThreshold = 5;    
 
-    public ushort Health = 100;
-    public byte Energy = 40;
     public Material DocileMaterial;
     public Material EngagedMaterial;
 
     // Start is called before the first frame update
     void Start()
     {
-        Agent = GetComponent<NavMeshAgent>();
-        StartPosition = this.transform.position;    
+        base.Initialize();
     }
 
     // Update is called once per frame
@@ -42,37 +36,37 @@ public class Mob1 : MonoBehaviour
         MoveTimer += Time.deltaTime;
 
         // If we are engaged with a target
-        if (AggroTarget != null)
+        if (_target != null)
         {
             Vector3 newPosition = Vector3.zero;
 
             // If we are still within max aggro range, continue to follow target
-            if (Vector3.Distance(this.transform.position, StartPosition) <= MaxAggroRadius && 
+            if (Vector3.Distance(this.transform.position, _startPosition) <= MaxAggroRadius && 
                 !AggroCooldown)
             {
                 // Continue to follow player until stopping distance threshold has been reached                
-                if (Vector3.Distance(this.transform.position, AggroTarget.transform.position) > StoppingDistance)
+                if (Vector3.Distance(this.transform.position, _target.transform.position) > StoppingDistance)
                 {
-                    newPosition = AggroTarget.transform.position;
+                    newPosition = _target.transform.position;
                     this.GetComponent<MeshRenderer>().material = EngagedMaterial;
                 }
                 else
                 {
                     // Stop mob from moving once it is engaged (within range) of target
-                    Agent.SetDestination(this.transform.position);                    
+                    _navMeshAgent.SetDestination(this.transform.position); AggroCooldown = false;
                     return;
                 }
             }
             else
             {
-                newPosition = RandomNavSphere(StartPosition, WanderRadius, -1);
-                AggroTarget = null;
+                newPosition = RandomNavSphere(_startPosition, WanderRadius, -1);
+                _target = null;
                 AggroCooldown = true;
                 this.GetComponent<MeshRenderer>().material = DocileMaterial;
             }                
 
             if (newPosition != Vector3.zero)
-                Agent.SetDestination(newPosition);
+                _navMeshAgent.SetDestination(newPosition);
         }
         else if (MoveTimer > MoveTimerThreshold)
         {
@@ -81,21 +75,21 @@ public class Mob1 : MonoBehaviour
             Vector3 newPosition;
             if (ResetWanderCounter < ResetWanderThreshold)
             {
-                newPosition = RandomNavSphere(StartPosition, WanderRadius, -1);
+                newPosition = RandomNavSphere(_startPosition, WanderRadius, -1);
                 MoveTimer = 0;
             }                
             else
             {
-                newPosition = StartPosition;
+                newPosition = _startPosition;
                 ResetWanderCounter = 0;
                 MoveTimer = -5f; // Wait a little bit longer after returning to StartPosition to move again
             }
 
-            Agent.SetDestination(newPosition);            
+            _navMeshAgent.SetDestination(newPosition);            
         }
 
         // Reset aggro
-        if (Vector3.Distance(this.transform.position, StartPosition) <= AggroCooldownRadius)
+        if (Vector3.Distance(this.transform.position, _startPosition) <= AggroCooldownRadius)
             AggroCooldown = false;
     }
 
@@ -103,7 +97,7 @@ public class Mob1 : MonoBehaviour
     {
         if (Health - damage <= 0)
         {
-            this.gameObject.SetActive(false);
+            Die();
             return;
         }            
         
@@ -117,10 +111,10 @@ public class Mob1 : MonoBehaviour
     {
         Collider[] hitColliders = Physics.OverlapSphere(this.transform.position, AggroRadius);
         for (int i = 0; i < hitColliders.Length; i++)
-        {
+        {            
             if (hitColliders[i].gameObject.tag.Contains("|Human|"))
-            {
-                AggroTarget = hitColliders[i].gameObject;
+            {                
+                _target = hitColliders[i].gameObject.GetComponent<BaseActor>();
             }
         }
     }

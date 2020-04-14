@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 public class TargetingManager : MonoBehaviour
 {
     private bool TargetingEnemy;    
-    private GameObject TargetObject;    
+    private BaseActor TargetBaseActor;    
 
     public GameObject TargetedObject;
     public GameObject TargetedObjectHealth;
@@ -24,30 +25,39 @@ public class TargetingManager : MonoBehaviour
     void Update()
     {
         if (TargetingEnemy)
-            TargetedObjectHealth.GetComponent<Slider>().value = TargetObject.GetComponent<Mob1>().Health;
+            TargetedObjectHealth.GetComponent<Slider>().value = TargetBaseActor.GetComponent<MobActor>().Health;
+    }
+
+    public void Cancel(int instanceId)
+    {
+        // Cancel targeting if instance id matches TargetObject
+        if (TargetBaseActor != null && TargetBaseActor.GetInstanceID() == instanceId)
+        {
+            Cancel();
+        }
     }
 
     public void Cancel()
     {
-        TargetObject = null;
+        TargetBaseActor = null;
         TargetingEnemy = false;
         TargetedObject.SetActive(false);
         TargetObjectName.GetComponent<Text>().text = string.Empty;
     }
 
-    public void Target(GameObject gameObject, bool isEnemy = false)
+    public void Target(BaseActor baseActor, bool isEnemy = false)
     {        
-        TargetObject = gameObject;
+        TargetBaseActor = baseActor;
         TargetingEnemy = isEnemy;
         TargetedObject.SetActive(true);
-        TargetObjectName.GetComponent<Text>().text = TargetObject.name;
+        TargetObjectName.GetComponent<Text>().text = TargetBaseActor.name;
         
 
         if (isEnemy)
         {
             TargetObjectFill.GetComponent<Image>().color = Color.red;
-            TargetedObjectHealth.GetComponent<Slider>().maxValue = TargetObject.GetComponent<Mob1>().Health;
-            TargetedObjectHealth.GetComponent<Slider>().value = TargetObject.GetComponent<Mob1>().Health;
+            TargetedObjectHealth.GetComponent<Slider>().maxValue = TargetBaseActor.GetComponent<MobActor>().Health;
+            TargetedObjectHealth.GetComponent<Slider>().value = TargetBaseActor.GetComponent<MobActor>().Health;
         }            
         else
         {
@@ -57,8 +67,8 @@ public class TargetingManager : MonoBehaviour
         }            
     }
 
-    public GameObject MoveTowards()
+    public BaseActor MoveTowards()
     {
-        return TargetObject;
+        return TargetBaseActor;
     }
 }
