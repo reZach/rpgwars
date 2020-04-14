@@ -56,7 +56,7 @@ public class TargetingManager : MonoBehaviour
         if (isEnemy)
         {
             TargetObjectFill.GetComponent<Image>().color = Color.red;
-            TargetedObjectHealth.GetComponent<Slider>().maxValue = TargetBaseActor.GetComponent<MobActor>().Health;
+            TargetedObjectHealth.GetComponent<Slider>().maxValue = TargetBaseActor.GetComponent<MobActor>().MaxHealth;
             TargetedObjectHealth.GetComponent<Slider>().value = TargetBaseActor.GetComponent<MobActor>().Health;
         }            
         else
