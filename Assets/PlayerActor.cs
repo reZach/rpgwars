@@ -11,6 +11,7 @@ public class PlayerActor : BaseActor
     private CharacterController CharacterController;
     private float TargetableRadius = 50f;
 
+    private bool Engaged;
     private ushort XP = 0;
     
     public PlayerHealth PlayerHealth;
@@ -36,15 +37,13 @@ public class PlayerActor : BaseActor
             Input.GetKeyDown(KeyCode.D))
         {
             PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.Directional);
-            if (HoldingItem != null)
-                HoldingItem.CanAttack = false;
+            Engaged = false;
         }
         else if (Input.GetMouseButton(0))
         {
             Vector3 mousePosition = Input.mousePosition;
             _target = null;
-            if (HoldingItem != null)
-                HoldingItem.CanAttack = false;
+            Engaged = false;
             PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.PointAndClick);
             PlayerCharacter.SetTargetFromMouseClick(mousePosition);
         }
@@ -59,7 +58,7 @@ public class PlayerActor : BaseActor
             {
                 // Stop walking closer to target
                 PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.Directional);
-                if (HoldingItem != null)
+                if (HoldingItem != null && Engaged)
                     HoldingItem.CanAttack = true;
             }
         }
@@ -67,6 +66,7 @@ public class PlayerActor : BaseActor
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             _targetingManager.Cancel();
+            Engaged = false;
         } 
         else if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -75,10 +75,12 @@ public class PlayerActor : BaseActor
             {
                 PlayerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.PointAndClick);
                 _target = _targetingManager.MoveTowards();
+                Engaged = true;
             }
         }
         else if (Input.GetKeyDown(KeyCode.C))
         {
+            Engaged = false;
             Collider[] hitColliders = Physics.OverlapSphere(this.transform.position, TargetableRadius);
             for (int i = 0; i < hitColliders.Length; i++)
             {
@@ -88,5 +90,9 @@ public class PlayerActor : BaseActor
                 }
             }
         }
+
+        // Stop attacking if we dis-engaged
+        if (!Engaged && HoldingItem != null)
+            HoldingItem.CanAttack = false;
     }
 }
