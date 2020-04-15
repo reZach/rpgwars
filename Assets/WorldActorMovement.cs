@@ -28,7 +28,11 @@ public class WorldActorMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Debug.Log(IsPlayerControlled);
+        if (IsPlayerControlled)
+            ControlByPlayer();
+        else
+            ControlByAI();
     }
 
     #region PrivatePropertyWrappers

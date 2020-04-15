@@ -13,9 +13,30 @@ public class TargetingManager : MonoBehaviour
     private WorldActorStats _worldActorStats;
     private WorldActorCombat _worldActorCombat;
 
+    // Inner HealthSlider components
+    private GameObject _background;
+    private GameObject _fill;
+    private GameObject _name;
+
     void Start()
     {
+        _worldActorCombat = GetComponent<WorldActorCombat>();
 
+        for (int i = 0; i < HealthSlider.transform.childCount; i++)
+        {
+            if (string.Equals(HealthSlider.transform.GetChild(i).name, "Background", StringComparison.OrdinalIgnoreCase))
+            {
+                _background = HealthSlider.transform.GetChild(i).gameObject;
+            }
+            else if (string.Equals(HealthSlider.transform.GetChild(i).name, "Fill Area", StringComparison.OrdinalIgnoreCase))
+            {
+                _fill = HealthSlider.transform.GetChild(i).gameObject;
+            }
+            else if (string.Equals(HealthSlider.transform.GetChild(i).name, "ObjectName", StringComparison.OrdinalIgnoreCase))
+            {
+                _name = HealthSlider.transform.GetChild(i).gameObject;
+            }
+        }
     }
 
     void Update()
@@ -28,8 +49,11 @@ public class TargetingManager : MonoBehaviour
         _worldActorStats = gameObject.GetComponent<WorldActorStats>();
 
         TargetUIContainer.SetActive(true);
-        //HealthSlider.GetComponent<Slider>().
+        _name.GetComponent<Text>().text = TargetBaseActor.name;
 
+        _fill.GetComponent<Image>().color = Color.red;
+        TargetedObjectHealth.GetComponent<Slider>().maxValue = _worldActorStats.MaxHealth;
+        TargetedObjectHealth.GetComponent<Slider>().value = _worldActorStats.Health;
     }
 
     private bool TargetingEnemy;
@@ -71,27 +95,27 @@ public class TargetingManager : MonoBehaviour
         TargetObjectName.GetComponent<Text>().text = string.Empty;
     }
 
-    public void Target(BaseActor baseActor, bool isEnemy = false)
-    {
-        TargetBaseActor = baseActor;
-        TargetingEnemy = isEnemy;
-        TargetedObject.SetActive(true);
-        TargetObjectName.GetComponent<Text>().text = TargetBaseActor.name;
+    //public void Target(BaseActor baseActor, bool isEnemy = false)
+    //{
+    //    TargetBaseActor = baseActor;
+    //    TargetingEnemy = isEnemy;
+    //    TargetedObject.SetActive(true);
+    //    TargetObjectName.GetComponent<Text>().text = TargetBaseActor.name;
 
 
-        if (isEnemy)
-        {
-            TargetObjectFill.GetComponent<Image>().color = Color.red;
-            TargetedObjectHealth.GetComponent<Slider>().maxValue = TargetBaseActor.GetComponent<MobActor>().MaxHealth;
-            TargetedObjectHealth.GetComponent<Slider>().value = TargetBaseActor.GetComponent<MobActor>().Health;
-        }
-        else
-        {
-            TargetObjectFill.GetComponent<Image>().color = Color.green;
-            TargetedObjectHealth.GetComponent<Slider>().maxValue = 1;
-            TargetedObjectHealth.GetComponent<Slider>().value = 1;
-        }
-    }
+    //    if (isEnemy)
+    //    {
+    //        TargetObjectFill.GetComponent<Image>().color = Color.red;
+    //        TargetedObjectHealth.GetComponent<Slider>().maxValue = TargetBaseActor.GetComponent<MobActor>().MaxHealth;
+    //        TargetedObjectHealth.GetComponent<Slider>().value = TargetBaseActor.GetComponent<MobActor>().Health;
+    //    }
+    //    else
+    //    {
+    //        TargetObjectFill.GetComponent<Image>().color = Color.green;
+    //        TargetedObjectHealth.GetComponent<Slider>().maxValue = 1;
+    //        TargetedObjectHealth.GetComponent<Slider>().value = 1;
+    //    }
+    //}
 
     public void Target2(GameObject gameObject)
     {

@@ -111,7 +111,7 @@ public class PlayerActor : BaseActor
             {
                 if (hitColliders[i].gameObject.tag.Contains("|Enemy|"))
                 {
-                    _targetingManager.Target(hitColliders[i].gameObject.GetComponent<BaseActor>(), true);
+                    _targetingManager.Target(hitColliders[i].gameObject);
                 }
             }
         }
