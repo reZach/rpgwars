@@ -75,7 +75,7 @@ public class WorldActorMovement : MonoBehaviour
                 }
             }
         }
-        else if (_worldActorCombat.GetTarget() != null)
+        else if (_worldActorCombat.GetTarget() != null && _worldActorCombat.GetEngaged())
         {
             // Continue to walk closer to target if not in range
             if (Vector3.Distance(this.transform.position, _worldActorCombat.GetTarget().transform.position) > _worldActorCombat.GetAdjacentColliderRadius())
@@ -86,24 +86,8 @@ public class WorldActorMovement : MonoBehaviour
             {
                 // Stop walking closer to target
                 _playerCharacter.UpdateLocomotion(PlayerCharacter.INPUT_TYPE.Directional);
-                //if (HoldingItem != null && Engaged)
-                //{
-                //    HoldingItem.CanAttack = true;
-
-                    //// Look towards targeted enemy
-                    //Vector3 enemyDirection = (_target.transform.position - this.gameObject.transform.position).normalized;
-                    //Quaternion lookRotation = Quaternion.LookRotation(enemyDirection);
-
-                    //this.gameObject.transform.rotation = lookRotation;//Quaternion.Slerp(this.gameObject.transform.rotation, lookRotation, Time.deltaTime * 10f);
-                //}
             }
         }
-
-        
-
-        // Stop attacking if we dis-engaged
-        //if (HoldingItem != null && !Engaged)
-        //    HoldingItem.CanAttack = false;
     }
 
     private void ControlByAI()

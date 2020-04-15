@@ -11,7 +11,6 @@ public class TargetingManager : MonoBehaviour
     public GameObject CancelTargetControl;
 
     private WorldActorStats _worldActorStats;
-    private WorldActorCombat _worldActorCombat;
 
     // Inner HealthSlider components
     private GameObject _background;
@@ -20,8 +19,6 @@ public class TargetingManager : MonoBehaviour
 
     void Start()
     {
-        _worldActorCombat = GetComponent<WorldActorCombat>();
-
         for (int i = 0; i < HealthSlider.transform.childCount; i++)
         {
             if (string.Equals(HealthSlider.transform.GetChild(i).name, "Background", StringComparison.OrdinalIgnoreCase))
@@ -44,16 +41,41 @@ public class TargetingManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Target a given actor.
+    /// </summary>
+    /// <param name="gameObject"></param>
     public void Target(GameObject gameObject)
     {
         _worldActorStats = gameObject.GetComponent<WorldActorStats>();
 
-        TargetUIContainer.SetActive(true);
-        _name.GetComponent<Text>().text = TargetBaseActor.name;
+        // Re-activate
+        TargetUIContainer.SetActive(false);
+        _name.SetActive(true);
 
-        _fill.GetComponent<Image>().color = Color.red;
+        // Update values
         TargetedObjectHealth.GetComponent<Slider>().maxValue = _worldActorStats.MaxHealth;
         TargetedObjectHealth.GetComponent<Slider>().value = _worldActorStats.Health;
+
+        _name.GetComponent<Text>().text = _worldActorStats.Name;
+        _fill.GetComponent<Image>().color = Color.red;        
+    }
+
+    public void Cancel(Guid? id)
+    {
+        // If passing in no target or
+        // a target that matches the currently targeted WorldActor,
+        // then cancel
+        if (!id.HasValue || (_worldActorStats != null &&
+            id.HasValue &&
+            _worldActorStats.Id == id))
+        {
+            _worldActorStats = null;
+
+            // De-activate
+            TargetUIContainer.SetActive(false);
+            _name.SetActive(false);
+        }
     }
 
     private bool TargetingEnemy;

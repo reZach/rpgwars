@@ -13,6 +13,7 @@ public class WorldActorCombat : MonoBehaviour
     private SphereCollider _areaCollider;
     private float _visionRadius = 50f;
     private bool _engaged;
+    private bool _isNonPlayer = true;
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +56,7 @@ public class WorldActorCombat : MonoBehaviour
             {
                 if (hitColliders[i].gameObject.tag.Contains("|Enemy|"))
                 {
-                    _targetingManager.Target2(hitColliders[i].gameObject);
+                    _targetingManager.Target(hitColliders[i].gameObject);
                 }
             }
         }
